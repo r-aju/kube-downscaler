@@ -1,0 +1,12 @@
+replicaCount: 2
+
+image:
+  tag: "v22.9.0"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 300Mi
+  requests:
+    cpu: 300m
+    memory: 200Mi

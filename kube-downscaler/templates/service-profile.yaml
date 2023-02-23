@@ -1,0 +1,11 @@
+{{- if .Values.routes.enabled }}
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: {{ include "kube-downscaler.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+spec:
+  {{- with .Values.routes.conditions }}
+  routes:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

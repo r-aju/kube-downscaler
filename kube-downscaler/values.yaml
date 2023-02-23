@@ -1,0 +1,117 @@
+# Default values for kube-downscaler.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: hjacobs/kube-downscaler
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations:
+  linkerd.io/inject: disabled
+  # prometheus.io/scrape: "true"
+  # prometheus.io/port: "8006"
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Add configs here
+configMap:
+  enabled: true
+  data: {}
+    # default.conf.template: |-
+    #   server {
+    #     listen 80 default_server;
+    #   }
+
+rbac:
+  ## If true, create & use RBAC resources
+  create: true
+  ## Ignored if rbac.create is true
+  serviceAccountName: default
+  extraRules: []
+   # - apiGroups:
+   #     - argoproj.io
+   #   resources:
+   #     - rollouts
+   #   verbs:
+   #     - get
+   #     - watch
+   #     - list
+   #     - update
+   #     - patch
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Add endpoints here for the route-level metrics
+routes:
+  enabled: false
+  conditions: []
+
+command: []
+
+
+args:
+    - --include-resources=deployments
+    - --exclude-namespaces=infra,kube-system,ci-cd,workflows,cd
+    - --interval=60
+    # - --debug
+
+
+env: {}
+
+enableLivenessProbe: false
+livenessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 30
+  timeoutSeconds: 1
+  # tcpSocket:
+  #   port: 8003
+
+enableReadinessProbe: false
+readinessProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  # tcpSocket:
+  #   port: 8003
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 500Mi
+  requests:
+    cpu: 100m
+    memory: 100Mi
+
+volumes: []
+
+volumeMounts: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+extraContainers: []
